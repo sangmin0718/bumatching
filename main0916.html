@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>짝자 라이브 매칭 (단일파일)</title>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial; margin: 24px; background:#fafafa; }
+    h1 { margin: 0 0 16px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; }
+    label { display:block; margin:6px 0 2px; font-weight: 600; }
+    input[type="text"], input[type="number"], select, textarea {
+      width: 100%; border:1px solid #d1d5db; border-radius: 8px; padding: 8px;
+    }
+    button { padding: 10px 14px; border:1px solid #111827; background:#111827; color:#fff; border-radius: 8px; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { border-bottom: 1px solid #e5e7eb; padding: 10px; font-size: 14px; }
+    th { text-align: left; background: #f3f4f6; }
+    .muted { color:#6b7280; }
+
+    /* 취미 칩(동그라미 버튼) */
+    .chipbox { display:flex; gap:8px; flex-wrap:wrap; }
+    .chip { border:1px solid #d1d5db; border-radius:999px; padding:6px 10px; cursor:pointer; user-select:none; background:#fff; }
+    .chip.sel { background:#111827; color:#fff; border-color:#111827; }
+    .inline { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  </style>
+</head>
+<body>
+  <h1>짝자 라이브 매칭 데모</h1>
+
+  <div class="grid">
+    <div class="card">
+      <h3>참가자 등록</h3>
+      <form id="formAdd">
+        <label>성별</label>
+        <select name="gender" required>
+          <option value="여">여</option>
+          <option value="남">남</option>
+        </select>
+
+        <label>이름</label>
+        <input type="text" name="name" required />
+
+        <label>닉네임</label>
+        <input type="text" name="nickName" required />
+
+        <label>자기소개 (bio)</label>
+        <input type="text" name="bio" placeholder="예: 천안 사는 박보검입니다." required />
+
+        <label>이상형 코멘트</label>
+        <input type="text" name="myComment" placeholder="예: 여행 좋아하는 분이면 좋겠어요" />
+
+        <label>나이</label>
+        <input type="number" name="age" min="20" max="29" required />
+
+        <label>학부/학과</label>
+        <select id="college" name="college" required></select>
+
+        <label>MBTI (대문자 4글자, 영문만)</label>
+        <input type="text" id="mbti" name="mbti" placeholder="ENFP" maxlength="4" required />
+
+        <label>취미 (최대 5개)</label>
+        <div id="hobbyChips" class="chipbox" aria-label="취미 선택"></div>
+        <div class="muted" id="hobbyCount">선택 0/5</div>
+
+        <label>지역 (시/도 → 시·군·구·읍·면)</label>
+        <div class="inline">
+          <button type="button" id="btnLoadRegions">region.json 불러오기</button>
+          <input type="file" id="regionsFile" accept=".json" style="display:none">
+          <small class="muted" id="regionsStatus">region.json 필요</small>
+        </div>
+        <div class="inline" style="margin-top:6px;">
+          <select id="rProvince" required><option value="">시/도</option></select>
+          <select id="rCity" required><option value="">시·군·구·읍·면</option></select>
+        </div>
+
+        <label>전화번호 (선택)</label>
+        <input type="text" name="phone" id="phone" placeholder="010-0000-0000 (없으면 비워두기)" />
+
+        <label>인스타그램 (선택)</label>
+        <input type="text" name="ig" placeholder="@handle (없으면 비워두기)" />
+
+        <div style="margin-top:12px; display:flex; gap:8px;">
+          <button type="submit">등록 + 즉시 매칭</button>
+          <button type="button" id="btnExport" style="background:#2563eb;border-color:#2563eb;">JSON 내보내기</button>
+          <button type="button" id="btnClear" style="background:#991b1b;border-color:#991b1b;">전체 삭제</button>
+        </div>
+      </form>
+      <p class="muted" style="margin-top:8px;">마지막 등록: <span id="lastAdded">-</span></p>
+      <p class="muted">전체: <span id="countAll">0</span>명 · 남: <span id="countMen">0</span>명 · 여: <span id="countWomen">0</span>명</p>
+    </div>
+
+    <div class="card">
+      <h3>방금 등록한 사람 기준 상위 3 추천</h3>
+      <table>
+        <thead><tr><th>닉네임</th><th>소개</th><th>이상형 코멘트</th><th>점수</th></tr></thead>
+        <tbody id="tbodyResults"></tbody>
+      </table>
+      <p class="muted">등록 후 자동으로 반대 성별 풀에서 상위 3명을 보여줍니다.</p>
+    </div>
+  </div>
+
+  <script>
+    /* ===================== 상수/옵션 ===================== */
+    const LS_KEY = 'jjagja_participants_live_v1';
+    const LS_REGIONS_KEY = 'KR_ADMIN_PROVINCE_MAP_V1';
+
+    const COLLEGES = [
+      "기독교학부","어문학부","사회복지학부","경찰학부","경상학부","관광학부",
+      "컴퓨터공학부","보건학부","간호학과","사범학부","문화예술학부","첨단IT공학부",
+      "디자인영상학부","스포츠과학부","외식산업학부"
+    ];
+
+    // 취미: 칩 UI로, 리스트 많이 넣어둠 (원하면 더 추가)
+    const HOBBIES = [
+      "운동","헬스","러닝","수영","요가","필라테스","등산","클라이밍","축구","농구","야구",
+      "게임","보드게임","퍼즐","코딩","경기 관람",
+      "영화","드라마","예능","애니","다큐","공포영화","독립영화",
+      "음악","노래","밴드","악기","피아노","기타","드럼","클럽",
+      "독서","시집","에세이","소설","경제경영","IT서적","자기계발",
+      "요리","베이킹","커피","카페탐방","차(티)","와인","맥주",
+      "사진","필름카메라","여행","드라이브","캠핑","백패킹","차박","낚시",
+      "전시회","뮤지컬","연극","미술관","박람회","콘서트",
+      "댄스","K-POP","스트릿댄스","발레","사교댄스",
+      "산책","반려동물","고양이","강아지","식물키우기",
+      "봉사활동","스터디","동아리","e스포츠","자전거"
+    ];
+
+    /* ===================== MBTI 점수표 ===================== */
+    const MBTI_SCORES = {
+      INFP:{INFP:30,ENFP:30,INFJ:30,ENFJ:40,INTJ:30,ENTJ:40,INTP:30,ENTP:30,ISFP:5,ESFP:5,ISTP:5,ESTP:5,ISFJ:10,ESFJ:5,ISTJ:5,ESTJ:5},
+      ENFP:{INFP:30,ENFP:30,INFJ:40,ENFJ:30,INTJ:40,ENTJ:30,INTP:30,ENTP:30,ISFP:5,ESFP:5,ISTP:5,ESTP:5,ISFJ:5,ESFJ:5,ISTJ:5,ESTJ:5},
+      INFJ:{INFP:30,ENFP:40,INFJ:30,ENFJ:30,INTJ:30,ENTJ:30,INTP:30,ENTP:40,ISFP:5,ESFP:5,ISTP:5,ESTP:5,ISFJ:5,ESFJ:5,ISTJ:5,ESTJ:5},
+      ENFJ:{INFP:40,ENFP:30,INFJ:30,ENFJ:30,INTJ:30,ENTJ:30,INTP:30,ENTP:30,ISFP:40,ESFP:5,ISTP:5,ESTP:5,ISFJ:5,ESFJ:5,ISTJ:5,ESTJ:5},
+      INTJ:{INFP:30,ENFP:40,INFJ:30,ENFJ:30,INTJ:30,ENTJ:30,INTP:30,ENTP:40,ISFP:20,ESFP:20,ISTP:20,ESTP:20,ISFJ:15,ESFJ:15,ISTJ:15,ESTJ:15},
+      ENTJ:{INFP:40,ENFP:30,INFJ:30,ENFJ:30,INTJ:30,ENTJ:30,INTP:40,ENTP:30,ISFP:20,ESFP:20,ISTP:20,ESTP:20,ISFJ:20,ESFJ:20,ISTJ:20,ESTJ:20},
+      INTP:{INFP:30,ENFP:30,INFJ:30,ENFJ:30,INTJ:30,ENTJ:40,INTP:30,ENTP:30,ISFP:20,ESFP:20,ISTP:20,ESTP:20,ISFJ:15,ESFJ:15,ISTJ:15,ESTJ:40},
+      ENTP:{INFP:30,ENFP:30,INFJ:40,ENFJ:30,INTJ:40,ENTJ:30,INTP:30,ENTP:30,ISFP:20,ESFP:20,ISTP:20,ESTP:20,ISFJ:15,ESFJ:15,ISTJ:15,ESTJ:15},
+      ISFP:{INFP:5,ENFP:5,INFJ:5,ENFJ:40,INTJ:20,ENTJ:20,INTP:20,ENTP:20,ISFP:15,ESFP:15,ISTP:15,ESTP:15,ISFJ:20,ESFJ:40,ISTJ:20,ESTJ:40},
+      ESFP:{INFP:5,ENFP:5,INFJ:5,ENFJ:5,INTJ:20,ENTJ:20,INTP:20,ENTP:20,ISFP:15,ESFP:15,ISTP:15,ESTP:15,ISFJ:40,ESFJ:20,ISTJ:40,ESTJ:20},
+      ISTP:{INFP:5,ENFP:5,INFJ:5,ENFJ:5,INTJ:20,ENTJ:20,INTP:20,ENTP:20,ISFP:15,ESFP:15,ISTP:15,ESTP:15,ISFJ:20,ESFJ:40,ISTJ:20,ESTJ:40},
+      ESTP:{INFP:5,ENFP:5,INFJ:5,ENFJ:5,INTJ:20,ENTJ:20,INTP:20,ENTP:20,ISFP:15,ESFP:15,ISTP:15,ESTP:15,ISFJ:40,ESFJ:20,ISTJ:40,ESTJ:20},
+      ISFJ:{INFP:5,ENFP:5,INFJ:5,ENFJ:5,INTJ:15,ENTJ:20,INTP:15,ENTP:15,ISFP:20,ESFP:40,ISTP:20,ESTP:40,ISFJ:30,ESFJ:30,ISTJ:30,ESTJ:30},
+      ESFJ:{INFP:5,ENFP:5,INFJ:5,ENFJ:5,INTJ:15,ENTJ:20,INTP:15,ENTP:15,ISFP:40,ESFP:20,ISTP:40,ESTP:20,ISFJ:30,ESFJ:30,ISTJ:30,ESTJ:30},
+      ISTJ:{INFP:5,ENFP:5,INFJ:5,ENFJ:5,INTJ:15,ENTJ:20,INTP:15,ENTP:15,ISFP:20,ESFP:40,ISTP:20,ESTP:40,ISFJ:30,ESFJ:30,ISTJ:30,ESTJ:30},
+      ESTJ:{INFP:5,ENFP:5,INFJ:5,ENFJ:5,INTJ:15,ENTJ:20,INTP:40,ENTP:15,ISFP:40,ESFP:20,ISTP:40,ESTP:20,ISFJ:30,ESFJ:30,ISTJ:30,ESTJ:30}
+    };
+
+    /* ===================== 유틸/스토어 ===================== */
+    const $ = (id) => document.getElementById(id);
+
+    function loadAll() {
+      try { const raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : []; }
+      catch { return []; }
+    }
+    function saveAll(list) { localStorage.setItem(LS_KEY, JSON.stringify(list)); }
+    function nextId(list) { return list.reduce((m, p) => Math.max(m, p.id || 0), 0) + 1; }
+
+    function normalize(p) {
+      const hobbyMap = { '헬스': '운동' };
+      const hobbies = (p.hobbies || []).map(h => hobbyMap[h] || h);
+      const mbti = String(p.mbti || '').toUpperCase();
+      return {
+        id: p.id ?? 0,
+        gender: p.gender, // "남"/"여"
+        name: (p.name || '').trim(),
+        nickName: (p.nickName || '').trim(),
+        bio: (p.bio || '').trim(),
+        myComment: (p.myComment || '').trim(),
+        status: p.status || 'waiting',
+        age: Number(p.age),
+        college: p.college,
+        mbti,
+        hobbies,
+        region: p.region,
+        phone: p.phone ?? '',
+        ig: p.ig ?? ''
+      };
+    }
+    function addParticipant(p) {
+      const list = loadAll();
+      const n = normalize(p);
+      n.id = nextId(list);
+      list.push(n);
+      saveAll(list);
+      return n;
+    }
+    function filterByGender(g) { return loadAll().filter(p => p.gender === g); }
+    function clearAll() { localStorage.removeItem(LS_KEY); }
+    function exportJson() {
+      const data = JSON.stringify(loadAll(), null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'participants_export.json';
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    /* ===================== 점수 엔진 ===================== */
+    function mbtiScore(a, b) {
+      a = String(a || '').toUpperCase(); b = String(b || '').toUpperCase();
+      if (MBTI_SCORES[a] && MBTI_SCORES[a][b] !== undefined) return MBTI_SCORES[a][b];
+      if (MBTI_SCORES[b] && MBTI_SCORES[b][a] !== undefined) return MBTI_SCORES[b][a];
+      return 10; // fallback
+    }
+    function getHobbiesScore(aHobbies, bHobbies) {
+      const setA = new Set(aHobbies || []);
+      const common = (bHobbies || []).filter(h => setA.has(h));
+      if (common.length >= 2) return 20;
+      if (common.length === 1) return 10;
+      return 0;
+    }
+    function getRegionScore(aRegion, bRegion) {
+      if (!aRegion || !bRegion) return 5;
+      if (aRegion === bRegion) return 20; // 같은 시(시/군/구 이름 동일)
+      const aTop = aRegion.split(' ')[0], bTop = bRegion.split(' ')[0];
+      if (aTop && bTop && aTop === bTop) return 15;
+      return 5;
+    }
+    function getAgeScore(aAge, bAge) {
+      const d = Math.abs((aAge ?? 0) - (bAge ?? 0));
+      if (d <= 2) return 15; if (d <= 3) return 10; if (d <= 6) return 5; return 0;
+    }
+    function getCollegeScore(aCollege, bCollege) { if (!aCollege || !bCollege) return 0; return aCollege === bCollege ? 0 : 5; }
+    function computeTotal(seeker, candidate) {
+      const mbtiRaw   = mbtiScore(seeker.mbti, candidate.mbti);
+      const hobbyRaw  = getHobbiesScore(seeker.hobbies, candidate.hobbies);
+      const regionRaw = getRegionScore(seeker.region, candidate.region);
+      const ageRaw    = getAgeScore(seeker.age, candidate.age);
+      const collegeRaw= getCollegeScore(seeker.college, candidate.college);
+      const total = mbtiRaw + hobbyRaw + regionRaw + ageRaw + collegeRaw;
+      return Math.round(total);
+    }
+    function getTopMatches(seeker, pool, topK = 3) {
+      return pool
+        .filter(p => p.id !== seeker.id && p.status !== 'matched')
+        .map(c => ({ nickName: c.nickName, bio: c.bio, myComment: c.myComment, total: computeTotal(seeker, c), id: c.id }))
+        .sort((a, b) => b.total - a.total)
+        .slice(0, topK);
+    }
+
+    /* ===================== UI: 콤보/칩/렌더 ===================== */
+    function fillSelect(el, arr){ el.innerHTML = arr.map(v => `<option value="${v}">${v}</option>`).join(''); }
+    function renderTop3(rows){
+      const tbody = $('tbodyResults');
+      tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.nickName}</td>
+          <td>${r.bio}</td>
+          <td>${r.myComment}</td>
+          <td style="text-align:right">${r.total}</td>
+        </tr>
+      `).join('');
+    }
+    function refreshCounts(){
+      const all = loadAll();
+      $('countAll').textContent = String(all.length);
+      $('countMen').textContent = String(all.filter(p => p.gender === '남').length);
+      $('countWomen').textContent = String(all.filter(p => p.gender === '여').length);
+    }
+
+    // 취미 칩 UI (최대 5개)
+    function buildHobbyChips(containerId, items, max=5){
+      const box = $(containerId);
+      let selected = new Set();
+      function syncCount(){ $('hobbyCount').textContent = `선택 ${selected.size}/${max}`; }
+      box.innerHTML = items.map(v=>`<span class="chip" data-val="${v}">${v}</span>`).join('');
+      box.addEventListener('click', (e)=>{
+        const chip = e.target.closest('.chip'); if(!chip) return;
+        const val = chip.dataset.val;
+        if (selected.has(val)){ selected.delete(val); chip.classList.remove('sel'); }
+        else {
+          if (selected.size >= max) return; // 최대 제한
+          selected.add(val); chip.classList.add('sel');
+        }
+        syncCount();
+      });
+      syncCount();
+      return ()=> Array.from(selected);
+    }
+
+    // MBTI 입력 제한: 대문자, 허용문자(E I S N F T J P)만, 길이 4로 고정
+    function bindMbtiInput(el){
+      const ALLOWED = new Set(['E','I','S','N','F','T','J','P']);
+      el.addEventListener('input', ()=>{
+        let s = el.value.toUpperCase().replace(/[^A-Z]/g,''); // 영문 외 제거 + 대문자
+        s = s.split('').filter(ch => ALLOWED.has(ch)).join('').slice(0,4);
+        el.value = s;
+      });
+    }
+
+    // region.json 로더 (시/도 → 시·군·구·읍·면)
+    function readRegionMap(){
+      try { return JSON.parse(localStorage.getItem(LS_REGIONS_KEY)) || null; } catch { return null; }
+    }
+    function writeRegionMap(map){ localStorage.setItem(LS_REGIONS_KEY, JSON.stringify(map)); }
+    function initRegionUI(map){
+      const r1 = $('rProvince'), r2 = $('rCity');
+      r1.innerHTML = '<option value="">시/도</option>' + Object.keys(map).map(v=>`<option>${v}</option>`).join('');
+      r2.innerHTML = '<option value="">시·군·구·읍·면</option>';
+      r1.onchange = ()=>{ const arr = map[r1.value]||[]; r2.innerHTML = '<option value="">시·군·구·읍·면</option>'+arr.map(v=>`<option>${v}</option>`).join(''); };
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 학부
+      fillSelect($('college'), COLLEGES);
+
+      // 취미 칩 생성
+      const getSelectedHobbies = buildHobbyChips('hobbyChips', HOBBIES, 5);
+
+      // MBTI 입력 제한
+      bindMbtiInput($('mbti'));
+
+      // 전화번호 포맷
+      $('phone').addEventListener('input', e=>{
+        const d = e.target.value.replace(/\D/g,'').slice(0,11);
+        e.target.value = d.replace(/^(\d{3})(\d{3,4})(\d{0,4}).*/, (m,a,b,c)=> c?`${a}-${b}-${c}`: (b?`${a}-${b}`:a));
+      });
+
+      // region.json 캐시/로드
+      const cached = readRegionMap();
+      if (cached){ $('regionsStatus').textContent = 'region.json: 로컬 캐시 사용중 ✓'; initRegionUI(cached); }
+      else { $('regionsStatus').textContent = 'region.json 필요'; }
+      $('btnLoadRegions').addEventListener('click', ()=> $('regionsFile').click());
+      $('regionsFile').addEventListener('change', ()=>{
+        const f = $('regionsFile').files[0]; if(!f) return;
+        const reader = new FileReader();
+        reader.onload = ()=>{
+          try {
+            const obj = JSON.parse(reader.result); // {"서울특별시":["강남구",...], ...}
+            if (!obj || typeof obj!=='object' || !Object.keys(obj).length) throw new Error('형식 오류');
+            writeRegionMap(obj); initRegionUI(obj);
+            $('regionsStatus').textContent = 'region.json 로드 완료 ✓ (로컬 저장됨)';
+          } catch(e) {
+            $('regionsStatus').textContent = 'JSON 형식 오류';
+          }
+        };
+        reader.readAsText(f,'utf-8');
+      });
+
+      refreshCounts();
+
+      // 제출 핸들러
+      $('formAdd').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.currentTarget);
+        const region = [ $('rProvince').value, $('rCity').value ].filter(Boolean).join(' ');
+
+        const p = {
+          gender: fd.get('gender'),
+          name: fd.get('name'),
+          nickName: fd.get('nickName'),
+          bio: fd.get('bio'),
+          myComment: fd.get('myComment'),
+          age: Number(fd.get('age')),
+          college: fd.get('college'),
+          mbti: $('mbti').value,               // 제한된 대문자4글자
+          hobbies: getSelectedHobbies(),       // 칩에서 읽기 (최대 5)
+          region,                              // "시/도 시·군·구"
+          phone: (fd.get('phone') || '').trim(),
+          ig: (fd.get('ig') || '').trim()
+        };
+
+        const added = addParticipant(p);
+        e.currentTarget.reset(); // 폼 리셋
+        // 칩 리셋 처리: 다시 만들기
+        buildHobbyChips('hobbyChips', HOBBIES, 5);
+        bindMbtiInput($('mbti'));
+        refreshCounts();
+
+        const targetGender = (added.gender === '남') ? '여' : '남';
+        const pool = filterByGender(targetGender);
+        const top3 = getTopMatches(added, pool, 3);
+        renderTop3(top3);
+
+        $('lastAdded').textContent = `${added.nickName} (#${added.id})`;
+      });
+
+      $('btnExport').addEventListener('click', exportJson);
+      $('btnClear').addEventListener('click', () => { clearAll(); renderTop3([]); refreshCounts(); $('lastAdded').textContent='-'; });
+    });
+  </script>
+</body>
+</html>
