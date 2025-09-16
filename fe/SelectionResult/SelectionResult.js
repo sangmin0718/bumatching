@@ -15,5 +15,10 @@ document.getElementById("instagram").innerText = "@" + userData.instagram;
 // 종료하기 버튼 클릭 이벤트
 document.querySelector(".end-btn").addEventListener("click", () => {
   alert("종료되었습니다."); 
-  // TODO: 여기서 메인 페이지로 이동하거나 세션 종료 로직 추가
+  
+  // 3초 후 첫 화면으로 이동
+  setTimeout(() => {
+    window.location.href = "../start.html";  // 첫 화면 파일 이름/경로에 맞게 수정
+  }, 1000);
 });
+
