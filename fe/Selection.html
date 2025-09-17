@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SelectionPage</title>
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Pretendard";
+      }
+
+      .cardBox {
+        width: 319px;
+        height: 477px;
+        background-color: #ffffff;
+        border: 2px solid #e5e8eb;
+        padding: 16px 18px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        border-radius: 16px;
+        justify-content: flex-start;
+        align-items: center;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        transition: border 0.2s ease-out, border-image 0.2s ease-out;
+      }
+
+      .cardBox:hover {
+        border: 2px solid transparent;
+        background: linear-gradient(#fff, #fff) padding-box,
+          linear-gradient(90deg, #ff3f39, #f15f74) border-box;
+        border-radius: 16px;
+      }
+
+      .page {
+        min-height: 100vh;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .detail-container {
+        width: 283px;
+        height: 236px;
+        border-radius: 8px;
+        background-color: #f5f5f5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 16px;
+      }
+
+      .detail {
+        color: #8b95a1;
+        font-size: 16px;
+        font-weight: 500;
+        margin: 0;
+        line-height: 22.5px;
+      }
+
+      .title {
+        margin: 0;
+        padding: 0;
+        color: #000000;
+        font-weight: 600;
+        margin-bottom: 20px;
+        font-size: 54px;
+      }
+
+      .card-container {
+        display: flex;
+        gap: 10px;
+      }
+
+      .score-context {
+        color: #4e5968;
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      .score {
+        background: linear-gradient(90deg, #ff3f39, #f15f74);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 62px;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .card-footer {
+        background: linear-gradient(90deg, #ff3f39, #f15f74);
+        color: #fff;
+        font-weight: 600;
+        width: 134px;
+        height: 26px;
+        text-align: center;
+        padding: 16px 0;
+        font-size: 22px;
+        width: 100%;
+        margin: 0;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 16px;
+      }
+
+      /* ===== 모달 오버레이 ===== */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5); /* 배경 어두워짐 */
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+      .modal-overlay.active {
+        display: flex;
+      }
+
+      /* ===== 팝업 ===== */
+      .modal {
+        background: #fff;
+        padding: 20px;
+        border-radius: 16px;
+        width: 598px;
+        height: 170px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+      }
+      .modal h3 {
+        margin: 0 0 10px;
+        font-size: 18px;
+        color: #111;
+      }
+      .modal p {
+        font-size: 14px;
+        color: #555;
+        margin: 0 0 16px;
+      }
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+      .btn {
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn.cancel {
+        background: #eee;
+      }
+      .btn.confirm {
+        background: #ff3f39;
+        color: #fff;
+      }
+
+      .modal-content {
+        align-self: flex-start;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .modal p {
+        font-size: 16px;
+        color: #8B8B8B;
+   
+        text-align: left; 
+         font-size: 24px;
+        font-weight: 600;
+      }
+
+      .modal-content h3 {
+        color: #FF3F39;
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+    
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <h4 class="title">소개팅 상대 선택하기</h4>
+      <p class="context">소개를 읽고 마음에 드는 사람 한 분을 선택해주세요!</p>
+      <div class="card-container">
+        <div class="cardBox">
+          <p class="score">86</p>
+          <p class="score-context">궁합점수</p>
+          <div class="detail-container">
+            <p class="detail">
+              안녕하세요! 저는 겉모습보다 대화의 즐거움을 더 중요하게 생각해요.
+              저와 함께라면 일상적인 이야기부터 깊은 고민까지 편하게 나눌 수
+              있을 거예요. 소소한 웃음과 편안함을 줄 수 있는 사람을 찾고
+              있습니다.
+            </p>
+          </div>
+          <div class="card-footer">솜사탕 같은 사람</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 모달 ===== -->
+    <div class="modal-overlay" id="overlay">
+      <div class="modal">
+        <div class="modal-content">
+          <h3>소개팅 상대로 선택하시겠어요?</h3>
+          <p>한번 선택한 상대는 돌이킬 수 없으며, 소개팅 참여 기회는 한번 뿐이에요!</p>
+        </div>
+
+        <div class="actions">
+          <button class="btn cancel" id="cancelBtn">취소</button>
+          <button class="btn confirm" id="okBtn">확인</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const card = document.querySelector(".cardBox");
+        const overlay = document.getElementById("overlay");
+        const cancelBtn = document.getElementById("cancelBtn");
+        const okBtn = document.getElementById("okBtn");
+
+        // 카드 클릭 시 모달 열기
+        card.addEventListener("click", () => {
+          overlay.classList.add("active");
+        });
+
+        // 취소 클릭 시 닫기
+        cancelBtn.addEventListener("click", () => {
+          overlay.classList.remove("active");
+        });
+
+        // 확인 클릭 시 닫기
+        okBtn.addEventListener("click", () => {
+          alert("확인되었습니다!");
+          overlay.classList.remove("active");
+        });
+
+        // 오버레이 바깥 클릭 시 닫기
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) {
+            overlay.classList.remove("active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
