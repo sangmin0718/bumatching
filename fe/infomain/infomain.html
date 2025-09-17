@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>짝자 라이브 매칭</title>
+  <link rel="stylesheet" href="infomain.css" />
+</head>
+<body>
+  <h1>짝자 라이브 매칭 데모</h1>
+
+  <div class="grid">
+    <!-- 참가자 등록 카드 -->
+    <div class="card">
+      <h3>참가자 등록</h3>
+      <form id="formAdd">
+        <label>성별</label>
+        <select name="gender" required>
+          <option value="여">여</option>
+          <option value="남">남</option>
+        </select>
+
+        <label>이름</label>
+        <input type="text" name="name" required />
+
+        <label>닉네임</label>
+        <input type="text" name="nickName" required />
+
+        <label>자기소개 (bio)</label>
+        <input type="text" name="bio" placeholder="예: 천안 사는 박보검입니다." required />
+
+        <label>이상형 코멘트</label>
+        <input type="text" name="myComment" placeholder="예: 여행 좋아하는 분이면 좋겠어요" />
+
+        <label>나이</label>
+        <input type="number" name="age" min="20" max="29" required />
+
+        <label>학부/학과</label>
+        <select id="college" name="college" required></select>
+
+        <label>MBTI</label>
+        <input type="text" name="mbti" placeholder="ENFP" required />
+
+        <label>취미</label>
+        <div id="hobbyChecks"></div>
+
+        <label>지역 (시)</label>
+        <select id="region" name="region" required></select>
+
+        <label>전화번호 (선택)</label>
+        <input type="text" name="phone" placeholder="010-0000-0000 (없으면 비워두기)" />
+
+        <label>인스타그램 (선택)</label>
+        <input type="text" name="ig" placeholder="@handle (없으면 비워두기)" />
+
+        <div style="margin-top:12px; display:flex; gap:8px;">
+          <button type="submit">등록 + 즉시 매칭</button>
+          <button type="button" id="btnExport" class="blue">JSON 내보내기</button>
+          <button type="button" id="btnClear" class="red">전체 삭제</button>
+        </div>
+      </form>
+      <p class="muted" style="margin-top:8px;">마지막 등록: <span id="lastAdded">-</span></p>
+      <p class="muted">전체: <span id="countAll">0</span>명 · 남: <span id="countMen">0</span>명 · 여: <span id="countWomen">0</span>명</p>
+    </div>
+
+    <!-- 추천 카드 -->
+    <div class="card">
+      <h3>방금 등록한 사람 기준 상위 3 추천</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>닉네임</th><th>소개</th><th>이상형 코멘트</th><th>점수</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyResults"></tbody>
+      </table>
+      <p class="muted">등록 후 자동으로 반대 성별 풀에서 상위 3명을 보여줍니다.</p>
+    </div>
+  </div>
+
+  <script src="./infomain.js"></script>
+</body>
+</html>

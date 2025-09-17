@@ -1,0 +1,67 @@
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial;
+  margin: 24px;
+  background: #fafafa;
+}
+h1 {
+  margin: 0 0 16px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+}
+label {
+  display: block;
+  margin: 6px 0 2px;
+  font-weight: 600;
+}
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px;
+}
+button {
+  padding: 10px 14px;
+  border: 1px solid #111827;
+  background: #111827;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button.blue {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+button.red {
+  background: #991b1b;
+  border-color: #991b1b;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+th,
+td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px;
+  font-size: 14px;
+}
+th {
+  text-align: left;
+  background: #f3f4f6;
+}
+.muted {
+  color: #6b7280;
+}
