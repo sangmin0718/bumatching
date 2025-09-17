@@ -6,71 +6,41 @@
     <title>시작페이지</title>
     <style>
       body {
-        text-align: center;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 3rem;
+      }
+      .startLogo {
+        width: 300px;
+        height: 300px;
+      }
+      .startBtn {
+        width: 352px;
+        color: white;
+        font-weight: 500;
+        font-size: 1rem;
+        height: 60px;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        background: linear-gradient(90deg, #ff3f39, #f15774);
+      }
+      .startBtn:hover {
+        background: linear-gradient(90deg, #d9443f, #b9322f);
       }
     </style>
   </head>
   <body>
-    <h4>두근두근</h4>
-    <h1>소개팅 <br />대작전!</h1>
-    <h5>이번엔 꼭 성공하고 말테야! 딱! 기다려!</h5>
-    <div>
-      <label>
-        <span>개인정보 제공에 동의합니다 </span>
-        <input type="checkbox" id="consent" name="consent" />
-      </label>
-    </div>
-    <h2>성별을 고르세요!</h2>
-    <div>
-      <input type="radio" id="male" name="gender" value="male" />
-      <label for="male">남자!</label>
-    </div>
-    <div>
-      <input type="radio" id="female" name="gender" value="female" />
-      <label for="female">여자!</label>
-    </div>
-
+    <img class="startLogo" src="./소개팅대작전_LOGO.png" />
+    <button class="startBtn" onclick="goNext()">소개팅 받으러 가기</button>
     <script>
-      const male = document.getElementById("male");
-      const female = document.getElementById("female");
-      const consent = document.getElementById("consent");
-
-      male.addEventListener("change", () => {
-        if (male.checked) {
-          if (consent.checked) {
-            localStorage.setItem("gender", "male");
-            localStorage.setItem("consent", consent.checked);
-            window.location.href = "aaa.html";
-          } else {
-            alert("개인정보 제공에 동의해야 합니다!");
-          }
-        }
-      });
-
-      female.addEventListener("change", () => {
-        if (female.checked) {
-          if (consent.checked) {
-            localStorage.setItem("gender", "female");
-            localStorage.setItem("consent", consent.checked);
-            window.location.href = "aaa.html";
-          } else {
-            alert("개인정보 제공에 동의해야 합니다!");
-          }
-        }
-      });
-      consent.addEventListener("change", () => {
-        if (consent.checked) {
-          if (male.checked) {
-            localStorage.setItem("gender", "male");
-            localStorage.setItem("consent", consent.checked);
-            window.location.href = "aaa.html";
-          } else if (female.checked) {
-            localStorage.setItem("gender", "female");
-            localStorage.setItem("consent", consent.checked);
-            window.location.href = "aaa.html";
-          }
-        }
-      });
+      function goNext() {
+        window.location.href = "aaa.html";
+      }
     </script>
   </body>
 </html>
