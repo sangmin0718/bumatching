@@ -143,83 +143,16 @@ function getTopMatches(seeker, pool, topK = 3) {
       bio: c.bio,
       myComment: c.myComment,
       total: computeTotal(seeker, c),
-      id: c.id
+      id: c.id,
+      name: c.name,
+      college: c.college,
+      age: c.age,
+      mbti: c.mbti,
+      hobbies: c.hobbies,
+      region: c.region,
+      phone: c.phone,
+      ig: c.ig
     }))
     .sort((a, b) => b.total - a.total)
     .slice(0, topK);
 }
-
-/* ===================== UI 바인딩 ===================== */
-function fillSelect(el, arr) {
-  if (!el) return;
-  el.innerHTML = arr.map(v => `<option value="${v}">${v}</option>`).join("");
-}
-function fillChecks(container, arr) {
-  if (!container) return;
-  container.innerHTML = arr.map(v => `
-    <label style="margin-right:10px"><input type="checkbox" name="hobbies" value="${v}"> ${v}</label>
-  `).join("");
-}
-function readHobbies(container) {
-  return [...container.querySelectorAll('input[name="hobbies"]:checked')].map(i => i.value);
-}
-function renderTop3(rows) {
-  const tbody = $("tbodyResults");
-  if (!tbody) return;
-  tbody.innerHTML = rows.map(r => `
-    <tr>
-      <td>${r.nickName}</td>
-      <td>${r.bio}</td>
-      <td>${r.myComment}</td>
-      <td style="text-align:right">${r.total}</td>
-    </tr>
-  `).join("");
-}
-function refreshCounts() {
-  const all = loadAll();
-  $("countAll").textContent = String(all.length);
-  $("countMen").textContent = String(all.filter(p => p.gender === "남").length);
-  $("countWomen").textContent = String(all.filter(p => p.gender === "여").length);
-}
-
-/* ===================== 초기화 ===================== */
-document.addEventListener("DOMContentLoaded", () => {
-  fillSelect($("college"), COLLEGES);
-  fillSelect($("region"), CITIES);
-  fillChecks($("hobbyChecks"), HOBBIES);
-  refreshCounts();
-
-  $("formAdd").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const p = {
-      gender: fd.get("gender"),
-      name: fd.get("name"),
-      nickName: fd.get("nickName"),
-      bio: fd.get("bio"),
-      myComment: fd.get("myComment"),
-      age: Number(fd.get("age")),
-      college: fd.get("college"),
-      mbti: fd.get("mbti"),
-      hobbies: readHobbies($("hobbyChecks")),
-      region: fd.get("region"),
-      phone: (fd.get("phone") || "").trim(),
-      ig: (fd.get("ig") || "").trim()
-    };
-    const added = addParticipant(p);
-    e.currentTarget.reset();
-    refreshCounts();
-
-    const targetGender = (added.gender === "남") ? "여" : "남";
-    const pool = filterByGender(targetGender);
-    const top3 = getTopMatches(added, pool, 3);
-    renderTop3(top3);
-
-    $("lastAdded").textContent = `${added.nickName} (#${added.id})`;
-  });
-
-  $("btnExport").addEventListener("click", exportJson);
-  $("btnClear").addEventListener("click", () => {
-    clearAll(); renderTop3([]); refreshCounts(); $("lastAdded").textContent = "-";
-  });
-});

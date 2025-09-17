@@ -16,21 +16,9 @@
     <div class="page">
       <h4 class="title">소개팅 상대 선택하기</h4>
       <p class="context">소개를 읽고 마음에 드는 사람 한 분을 선택해주세요!</p>
-      <div class="card-container">
-        <div class="cardBox">
-          <p class="score">86</p>
-          <p class="score-context">궁합점수</p>
-          <div class="detail-container">
-            <p class="detail">
-              안녕하세요! 저는 겉모습보다 대화의 즐거움을 더 중요하게 생각해요.
-              저와 함께라면 일상적인 이야기부터 깊은 고민까지 편하게 나눌 수
-              있을 거예요. 소소한 웃음과 편안함을 줄 수 있는 사람을 찾고
-              있습니다.
-            </p>
-          </div>
-          <div class="card-footer">솜사탕 같은 사람</div>
-        </div>
-      </div>
+
+      <!-- JS에서 카드 3개를 자동 생성 -->
+      <div class="card-container" id="cardContainer"></div>
     </div>
 
     <!-- ===== 모달 ===== -->
@@ -40,7 +28,6 @@
           <h3>소개팅 상대로 선택하시겠어요?</h3>
           <p>한번 선택한 상대는 돌이킬 수 없으며, 소개팅 참여 기회는 한번 뿐이에요!</p>
         </div>
-
         <div class="actions">
           <button class="btn cancel" id="cancelBtn">취소</button>
           <button class="btn confirm" id="okBtn">확인</button>
@@ -48,6 +35,9 @@
       </div>
     </div>
 
+    <!-- 공용 로직 -->
+    <script src="../infomain/infomain.js"></script>
+    <!-- 페이지 로직 -->
     <script src="Selection.js"></script>
   </body>
 </html>

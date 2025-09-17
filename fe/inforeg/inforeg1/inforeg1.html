@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>정보 입력 1단계</title>
+  <link rel="stylesheet" href="./inforeg1.css">
+</head>
+<body>
+  <h1>정보 입력 (1단계)</h1>
+  <form id="formStep1">
+    <label>성별</label>
+    <select name="gender" required>
+      <option value="">성별을 선택하세요</option>
+      <option value="남">남</option>
+      <option value="여">여</option>
+    </select>
+
+    <label>닉네임</label>
+    <input type="text" name="nickName" required>
+
+    <label>나이</label>
+    <input type="number" name="age" min="20" max="29" required>
+
+    <label>이름</label>
+    <input type="text" name="name" required>
+
+    <label>학부</label>
+    <!-- 🔥 여기서는 옵션을 넣지 않고 JS에서 infolist.js로 채움 -->
+    <select name="college" required></select>
+
+    <div class="buttons">
+      <button type="button" id="btnNext">다음</button>
+    </div>
+  </form>
+
+  <!-- 공용 데이터 배열 -->
+  <script src="../../infomain/infolist.js"></script>
+  <!-- 1단계 페이지 JS -->
+  <script src="./inforeg1.js"></script>
+</body>
+</html>
