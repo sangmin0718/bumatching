@@ -46,6 +46,19 @@ function addParticipant(p) {
 }
 function filterByGender(g) { return loadAll().filter(p => p.gender === g); }
 
+function exportJson() {
+  const data = JSON.stringify(loadAll(), null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "participants_export.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+
 /* ===================== 매칭 점수 엔진 ===================== */
 const MBTI_SCORES = {
   INFP: { INFP:30, ENFP:30, INFJ:30, ENFJ:40, INTJ:30, ENTJ:40, INTP:30, ENTP:30, ISFP:5, ESFP:5, ISTP:5, ESTP:5, ISFJ:10, ESFJ:5, ISTJ:5, ESTJ:5 },
@@ -110,11 +123,19 @@ function getTopMatches(seeker, pool, topK = 3) {
   return pool
     .filter(p => p.id !== seeker.id && p.status !== "matched")
     .map(c => ({
+      id: c.id,
       nickName: c.nickName,
       bio: c.bio,
       myComment: c.myComment,
       total: computeTotal(seeker, c),
-      id: c.id
+      name: c.name,
+      college: c.college,
+      age: c.age,
+      mbti: c.mbti,
+      hobbies: c.hobbies,
+      region: c.region,
+      phone: c.phone,
+      ig: c.ig
     }))
     .sort((a, b) => b.total - a.total)
     .slice(0, topK);
