@@ -39,12 +39,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const phone = document.querySelector('[name="phone"]').value.trim();
     const ig = document.querySelector('[name="ig"]').value.trim();
 
-    // 취미 최대 5개 제한
-    if (hobbies.length > 5) {
-      alert("취미는 최대 5개까지만 선택할 수 있습니다.");
-      return;
+    // 취미 체크박스 최대 5개 선택 제한
+  hobbyContainer.addEventListener("change", (e) => {
+    if (e.target.type === "checkbox") {
+      const checked = hobbyContainer.querySelectorAll('input[type="checkbox"]:checked');
+      if (checked.length > 5) {
+        e.target.checked = false;
+        alert("취미는 최대 5개까지만 선택할 수 있습니다.");
+      }
     }
-
+  });
     const data = {
       mbti,
       hobbies,
