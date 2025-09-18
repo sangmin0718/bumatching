@@ -8,11 +8,26 @@ document.addEventListener("DOMContentLoaded", () => {
     </label>
   `).join("");
 
-  /* ==== 지역 선택 채우기 ==== */
- const regionSelect = document.getElementById("region");
-regionSelect.innerHTML =
-  `<option value="">시/도를 선택해주세요.</option>` +
-  Object.keys(CITIES).map(city => `<option value="${city}">${city}</option>`).join("");
+  /* ==== 지역 선택 채우든지요니미 씨발 ==== */
+  const regionSelect = document.getElementById("region");
+  regionSelect.innerHTML =
+    `<option value="">시/도를 선택해주세요.</option>` +
+    Object.keys(CITIES).map(city => `<option value="${city}">${city}</option>`).join("");
+
+  const subregionSelect = document.getElementById("subregion");
+  regionSelect.addEventListener("change", (e) => {
+    const selectedCity = e.target.value;
+    if (selectedCity && CITIES[selectedCity]) {
+      subregionSelect.innerHTML =
+        `<option value="">군/구를 선택해주세요.</option>` +
+        CITIES[selectedCity].map(sub => `<option value="${sub}">${sub}</option>`).join("");
+      subregionSelect.disabled = false;
+    } else {
+      subregionSelect.innerHTML = `<option value="">군/구를 선택해주세요.</option>`;
+      subregionSelect.disabled = true;
+    }
+  });
+  subregionSelect.disabled = true;
 
   /* ==== 다음 버튼 ==== */
   document.getElementById("btnNext").addEventListener("click", () => {
