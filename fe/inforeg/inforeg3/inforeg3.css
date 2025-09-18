@@ -1,76 +1,94 @@
-body {
-  font-family: 'Noto Sans KR', sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #fff;
-  display: flex;
-  justify-content: center;
+:root{
+  --bg:#ffffff;
+  --card:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --primary:#ef4444;
+  --primary-600:#dc2626;
+  --focus:#2563eb;
+  --radius:12px;
 }
 
-.container {
-  max-width: 600px;
-  width: 100%;
-  padding: 40px 20px;
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Helvetica, Arial, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI Emoji";
+  line-height:1.5;
 }
 
-h1 {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 8px;
+.container{
+  max-width:600px;   /* 전체 화면 사이즈 줄임 */
+  margin:48px auto;
+  padding:0 20px;
 }
 
-.subtitle {
-  color: #6b7280;
-  margin-bottom: 24px;
+h1{
+  font-size:36px; line-height:1.2; letter-spacing:-0.02em;
+  margin:0 0 16px; font-weight:800;
+}
+.subtitle{color:var(--muted); margin-bottom:20px}
+
+#formStep3{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:20px;
 }
 
-label {
-  display: block;
-  margin: 16px 0 8px;
-  font-weight: 600;
+label{display:block; font-weight:700; margin:14px 0 8px}
+
+textarea{
+  width:100%; min-height:90px; resize:vertical;
+  border:none;                     /* 테두리 제거 */
+  border-radius:10px;
+  padding:12px 14px; font-size:15px; outline:none;
+  background:#f9fafb;
+  transition:box-shadow .15s, background .15s;
+}
+textarea::placeholder{color:#cbd5e1}
+textarea:focus{
+  box-shadow:0 0 0 3px rgba(37,99,235,.15);
+  background:#fff;
 }
 
-textarea {
-  width: 100%;
-  min-height: 100px;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 14px;
-  resize: vertical;
+.terms-box{
+  border:none;                     /* 테두리 제거 */
+  border-radius:10px;
+  padding:12px 14px;
+  background:#fcfcfc;
+  color:#374151; font-size:13px; line-height:1.5;
 }
 
-.terms-box {
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  padding: 12px;
-  max-height: 120px;
-  overflow-y: auto;
-  background: #f9fafb;
-  font-size: 13px;
-  line-height: 1.5;
-  margin-bottom: 8px;
+.checkbox{
+  display:flex; align-items:flex-start; gap:8px;
+  user-select:none; margin-top:8px;
 }
+.checkbox input{width:16px; height:16px; margin-top:2px}
 
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
+.buttons{
+  margin-top:20px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
 }
-
-.buttons {
-  margin-top: 24px;
-  display: flex;
-  justify-content: space-between;
+button{
+  width:160px; height:42px;   /* 버튼 크기 줄임 */
+  border-radius:12px; border:none;
+  background:var(--primary); color:#fff;
+  font-weight:700; font-size:15px; cursor:pointer;
+  box-shadow:0 6px 12px rgba(239,68,68,.25);
+  transition:transform .05s ease, background .15s ease, box-shadow .15s ease;
 }
+button:hover{background:var(--primary-600)}
+button:active{transform:translateY(1px)}
+button[disabled]{opacity:.55; cursor:not-allowed; box-shadow:none}
 
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  background: #ef4444;
-  color: #fff;
-  font-size: 14px;
-  cursor: pointer;
+#btnPrev{
+  background:#111827;
+  box-shadow:0 6px 12px rgba(17,24,39,.25);
+}
+#btnPrev:hover{background:#0b1220}
+
+/* 모바일 대응 */
+@media (max-width: 480px){
+  .buttons{flex-direction:column-reverse; align-items:stretch}
+  button{width:100%}
 }

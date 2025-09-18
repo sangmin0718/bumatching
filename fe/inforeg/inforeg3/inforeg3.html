@@ -1,50 +1,47 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>정보 입력 (3단계)</title>
   <link rel="stylesheet" href="./inforeg3.css">
 </head>
 <body>
-  <div class="container">
-    <h1>참가자 등록하기</h1>
-    <p class="subtitle">참가자 등록을 위해 정보를 입력해주세요</p>
+<div class="container">
+  <h1>참가자 등록하기</h1>
+  <p class="subtitle">참가자 등록을 위해 정보를 입력해주세요</p>
 
-    <form id="formStep3">
-      <!-- 자기소개 -->
-      <label>자기소개</label>
-      <textarea name="bio" placeholder="이상에게 어필할 수 있도록 자기소개를 작성해주세요!" required></textarea>
+  <form id="formStep3">
+    <label>자기소개</label>
+    <textarea name="bio" placeholder="이성에게 어필할 수 있도록 자기소개를 작성해주세요!" required></textarea>
 
-      <!-- 이상형 코멘트 -->
-      <label>이상형 코멘트</label>
-      <textarea name="myComment" placeholder="마지막입니다! 당신의 이상형은 무엇인가요?"></textarea>
+    <label>이상형 코멘트</label>
+    <textarea name="myComment" placeholder="마지막입니다! 당신의 이상형은 무엇인가요?"></textarea>
 
-      <!-- 개인정보 동의 -->
-      <label>개인정보 수집 및 이용 동의</label>
-      <div class="terms-box">
-        NOPE 소개팅 참가자 서비스를 이용해주셔서 감사합니다.<br>
-        서비스 운영상 수집된 개인 정보는 매칭 및 이벤트 진행을 위해 사용되며,<br>
-        이용 후 일정 기간 보관됩니다.<br><br>
-        1. 수집되는 정보 항목: 이름, 나이, 성별, 연락처, MBTI, 취미 등<br>
-        2. 수집 목적: 참가자 매칭 및 이벤트 운영<br>
-        3. 보관 기간: 서비스 종료 후 3개월<br>
-      </div>
-      <label class="checkbox">
-        <input type="checkbox" id="agreeTerms" required>
-        개인정보 수집 및 이용에 동의합니다
-      </label>
+    <label>개인정보 수집 및 이용 동의</label>
+    <div class="terms-box">
+      NOPE 소개팅 참가자 서비스를 이용해주셔서 감사합니다.<br />
+      서비스 운영상 수집된 개인 정보는 매칭 및 이벤트 진행을 위해 사용되며,<br />
+      이용 후 일정 기간 보관됩니다.<br /><br />
+      1. 수집되는 정보 항목: 이름, 나이, 성별, 연락처, MBTI, 취미 등<br />
+      2. 수집 목적: 참가자 매칭 및 이벤트 운영<br />
+      3. 보관 기간: 서비스 종료 후 3개월<br />
+    </div>
+    <label class="checkbox">
+      <input type="checkbox" id="agreeTerms" required />
+      개인정보 수집 및 이용에 동의합니다
+    </label>
 
-      <div class="buttons">
-        <button type="button" id="btnPrev">이전</button>
-        <button type="submit" id="btnSubmit">소개팅 참여하기</button>
-      </div>
-    </form>
-  </div>
+    <div class="buttons">
+      <button type="button" id="btnPrev">이전</button>
+      <button type="submit" id="btnSubmit">소개팅 참여하기</button>
+    </div>
+  </form>
+</div>
 
-  <!-- 공용 로직 -->
-  <script src="../../infomain/infocal.js"></script>
-  <!-- 페이지 로직 -->
-  <script src="./inforeg3.js"></script>
+<!-- 공용 로직: 형제 폴더이므로 ../ 로 한 단계만 올라갑니다 -->
+<script src="../../infomain/infocal.js"></script>
+<!-- 페이지 로직 -->
+<script src="./inforeg3.js"></script>
 </body>
 </html>
