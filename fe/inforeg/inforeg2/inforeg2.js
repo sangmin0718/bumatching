@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
   `).join("");
 
   /* ==== 지역 선택 채우기 ==== */
-  const regionSelect = document.getElementById("region");
-  regionSelect.innerHTML =
-    `<option value="">시/도를 선택해주세요.</option>` +
-    CITIES.map(city => `<option value="${city}">${city}</option>`).join("");
+ const regionSelect = document.getElementById("region");
+regionSelect.innerHTML =
+  `<option value="">시/도를 선택해주세요.</option>` +
+  Object.keys(CITIES).map(city => `<option value="${city}">${city}</option>`).join("");
 
   /* ==== 다음 버튼 ==== */
   document.getElementById("btnNext").addEventListener("click", () => {
