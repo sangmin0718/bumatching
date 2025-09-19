@@ -17,6 +17,7 @@
       .startLogo {
         width: 300px;
         height: 300px;
+        z-index: 1;
       }
       .startBtn {
         width: 352px;
@@ -28,13 +29,29 @@
         border-radius: 0.5rem;
         cursor: pointer;
         background: linear-gradient(90deg, #ff3f39, #f15774);
+        z-index: 1;
       }
       .startBtn:hover {
         background: linear-gradient(90deg, #d9443f, #b9322f);
+        z-index: 1;
+      }
+
+      .bgVideo {
+        position: fixed;
+        top: 0;
+        left: 0;
+        min-width: 100%;
+        min-height: 100%;
+        object-fit: cover;
+        z-index: -1; /* 뒤로 보내기 */
       }
     </style>
   </head>
   <body>
+    <video class="bgVideo" autoplay muted loop>
+      <source src="./res/소개팅대작전_메인비디오.mp4" type="video/mp4" />
+      브라우저가 동영상을 지원하지 않습니다.
+    </video>
     <img class="startLogo" src="./소개팅대작전_LOGO.png" />
     <button class="startBtn" onclick="goNext()">소개팅 받으러 가기</button>
     <script>

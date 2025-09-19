@@ -30,12 +30,14 @@ label {
   font-weight: 600;
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 10px 14px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 .hobby-grid {
@@ -45,46 +47,27 @@ input, select {
 }
 
 .hobby-grid label {
-  display: inline-block;
-  padding: 0;
-  border-radius: 20px;
   cursor: pointer;
-  position: relative;
 }
-
-.hobby-grid input[type="checkbox"] {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  opacity: 0;
-  cursor: pointer;
-  z-index: 2;
-}
-
 .hobby-grid span {
   display: inline-block;
+
   padding: 8px 12px;
   border-radius: 20px;
   background: #f3f4f6;
-  color: #374151;
   font-size: 14px;
-  transition: all 0.12s ease;
-  pointer-events: none;
-  user-select: none;
+  transition: background 0.2s, color 0.2s;
 }
 
-.hobby-grid input[type="checkbox"]:checked + span {
+/* input 숨김 */
+.hobby-grid input {
+  display: none;
+}
+
+/* 체크됐을 때 스타일 */
+.hobby-grid input:checked + span {
   background: #ef4444;
-  color: #ffffff;
-  box-shadow: 0 6px 18px rgba(239,68,68,0.12);
-  transform: translateY(-1px);
-}
-
-.hobby-grid input[type="checkbox"]:focus + span {
-  outline: 3px solid rgba(239,68,68,0.14);
-  outline-offset: 2px;
+  color: #fff;
 }
 
 .buttons {
