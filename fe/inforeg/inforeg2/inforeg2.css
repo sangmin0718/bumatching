@@ -1,5 +1,5 @@
 body {
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   margin: 0;
   padding: 0;
   background: #fff;
@@ -30,12 +30,14 @@ label {
   font-weight: 600;
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 10px 14px;
   border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 .hobby-grid {
@@ -45,18 +47,23 @@ input, select {
 }
 
 .hobby-grid label {
+  cursor: pointer;
+}
+.hobby-grid span {
   display: inline-block;
   padding: 8px 12px;
-  background: #f3f4f6;
   border-radius: 20px;
-  cursor: pointer;
+  background: #f3f4f6;
   font-size: 14px;
+  transition: background 0.2s, color 0.2s;
 }
 
+/* input 숨김 */
 .hobby-grid input {
   display: none;
 }
 
+/* 체크됐을 때 스타일 */
 .hobby-grid input:checked + span {
   background: #ef4444;
   color: #fff;

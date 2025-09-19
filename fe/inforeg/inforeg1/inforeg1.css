@@ -29,12 +29,21 @@ label {
 }
 
 input, select {
+   box-sizing: border-box;
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
   margin-bottom: 12px;
 }
+
+
+.option-name{
+  color: #4E5968;
+  font-size: 16px;
+  font-weight: 500;
+}
+
 
 button {
   width: 100%;
@@ -49,3 +58,16 @@ button {
 button:hover {
   background: #d22;
 }
+
+
+h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
