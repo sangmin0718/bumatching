@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>설정</title>
+  <style>
+    :root{--bg:#fafafa;--card:#fff;--line:#e5e7eb;--muted:#6b7280;--btn:#111827;--ok:#065f46;--primary:#1f2937;}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,"Noto Sans KR",Arial}
+    header{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:#fff;border-bottom:1px solid var(--line)}
+    header h1{margin:0;font-size:20px}
+    .wrap{max-width:960px;margin:24px auto;padding:0 16px}
+    .actions{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+    .btn{padding:10px 14px;border-radius:10px;border:1px solid var(--btn);background:var(--btn);color:#fff;cursor:pointer}
+    .btn.primary{background:var(--primary);border-color:var(--primary)}
+    .btn.ok{background:var(--ok);border-color:var(--ok)}
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+    .panel.hidden{display:none}
+    .muted{color:var(--muted)}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid var(--line);padding:8px;text-align:left;font-size:14px}
+    th{background:#f3f4f6}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>설정</h1>
+    <div class="actions">
+      <button id="btnHome" class="btn">메인으로</button>
+      <button id="btnUpload" class="btn">JSON 업로드</button>
+      <button id="btnPreview" class="btn primary">미리보기</button>
+      <input id="fileJson" type="file" accept="application/json,.json" hidden />
+      <button id="btnApply" class="btn ok">적용</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="panel" class="panel hidden" aria-live="polite">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div>총 인원: <b id="cntAll">0</b>명 (남 <b id="cntMen">0</b> / 여 <b id="cntWomen">0</b>)</div>
+        <div class="muted" id="fileName"></div>
+      </div>
+      <div id="preview"></div>
+    </section>
+  </main>
+
+  <script>
+    // LocalStorage 키
+    const LS_KEY = "jjagja_participants_live_v1";
+
+    // DOM 헬퍼
+    const $ = (sel) => document.querySelector(sel);
+    const fileInput = $("#fileJson");
+    const panel = $("#panel");
+    const fileNameEl = $("#fileName");
+    const cntAll = $("#cntAll"), cntMen = $("#cntMen"), cntWomen = $("#cntWomen");
+    const previewBox = $("#preview");
+
+    let loaded = null; // { items: Participant[], name: string }
+
+    // 정규화
+    function normalize(p, idx){
+      const hobbyMap = { "헬스":"운동" };
+      const hobbies = Array.isArray(p.hobbies) ? p.hobbies.map(h => hobbyMap[h] || h) : [];
+      const mbti = String(p.mbti || "").toUpperCase();
+      return {
+        id: Number.isFinite(p.id) ? Number(p.id) : (idx + 1),
+        gender: p.gender === "남" ? "남" : "여",
+        name: (p.name || "").trim(),
+        nickName: (p.nickName || "").trim(),
+        bio: (p.bio || "").trim(),
+        myComment: (p.myComment || "").trim(),
+        status: (p.status === "matched" || p.status === "waiting") ? p.status : "waiting",
+        age: Number(p.age) || 0,
+        college: p.college || "",
+        mbti,
+        hobbies,
+        region: p.region || "",
+        phone: p.phone || "",
+        ig: p.ig || "",
+        lastMatchedAt: typeof p.lastMatchedAt === "number" ? p.lastMatchedAt : 0
+      };
+    }
+
+    // JSON 파싱: [...] 또는 {men:[...], women:[...]}
+    function parseAnyJson(text){
+      const obj = JSON.parse(text);
+      let arr = [];
+      if (Array.isArray(obj)) arr = obj;
+      else if (obj && typeof obj === "object"){
+        if (Array.isArray(obj.men)) arr = arr.concat(obj.men);
+        if (Array.isArray(obj.women)) arr = arr.concat(obj.women);
+      }
+      if (!arr.length) throw new Error("올바른 JSON 배열이 아닙니다.");
+      return arr.map(normalize);
+    }
+
+    function renderPreview(list, name){
+      const men = list.filter(p => p.gender === "남").length;
+      const women = list.filter(p => p.gender === "여").length;
+      cntAll.textContent = String(list.length);
+      cntMen.textContent = String(men);
+      cntWomen.textContent = String(women);
+      fileNameEl.textContent = name || "";
+
+      const top = list.slice(0, 40);
+      const rows = top.map(p => `
+        <tr>
+          <td>${p.id}</td>
+          <td>${p.gender}</td>
+          <td>${p.name}</td>
+          <td>${p.nickName}</td>
+          <td>${p.age}</td>
+          <td>${p.college}</td>
+          <td>${p.mbti}</td>
+          <td>${(p.hobbies||[]).join(", ")}</td>
+          <td class="muted">${p.region}</td>
+          <td class="muted">${p.status}</td>
+        </tr>
+      `).join("");
+
+      previewBox.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>성별</th><th>이름</th><th>닉네임</th>
+              <th>나이</th><th>학부</th><th>MBTI</th><th>취미</th>
+              <th>지역</th><th>상태</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+        ${list.length > 40 ? `<p class="muted">…외 ${list.length - 40}명</p>` : ""}
+      `;
+      panel.classList.remove("hidden");
+    }
+
+    function applyToLocalStorage(list){
+      localStorage.setItem(LS_KEY, JSON.stringify(list));
+    }
+
+    // ===== 이벤트 =====
+    $("#btnHome").addEventListener("click", () => {
+      window.location.href = "./start.html";
+    });
+
+    // ▼ 새로 추가: JSON 업로드 버튼(파일 선택)
+    $("#btnUpload").addEventListener("click", () => {
+      fileInput.value = "";
+      fileInput.click();
+    });
+
+    // 파일 선택 후 파싱 → 미리보기 표시
+    fileInput.addEventListener("change", async () => {
+      const f = fileInput.files && fileInput.files[0];
+      if (!f) return;
+      try {
+        const text = await f.text();
+        const items = parseAnyJson(text);
+        loaded = { items, name: f.name };
+        renderPreview(items, f.name);
+      } catch (e) {
+        loaded = null;
+        panel.classList.add("hidden");
+        alert("JSON 파싱 실패: " + (e.message || e));
+      }
+    });
+
+    // 미리보기: 파일 미선택이면 업로드로 유도
+    $("#btnPreview").addEventListener("click", () => {
+      if (!loaded) {
+        fileInput.value = "";
+        fileInput.click();
+      } else {
+        renderPreview(loaded.items, loaded.name);
+      }
+    });
+
+    // 적용: 로컬스토리지에 저장
+    $("#btnApply").addEventListener("click", () => {
+      if (!loaded) { alert("먼저 JSON을 업로드/미리보기 해주세요."); return; }
+      applyToLocalStorage(loaded.items);
+      alert("적용 완료! 참가자 데이터가 저장되었습니다.");
+    });
+  </script>
+</body>
+</html>

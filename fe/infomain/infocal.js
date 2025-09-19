@@ -15,6 +15,17 @@ function clearAll() { localStorage.removeItem(LS_KEY); }
 function nextId(list) {
   return list.reduce((m, p) => Math.max(m, p.id || 0), 0) + 1;
 }
+
+/* ===== 연락처 정규화 유틸 ===== */
+function normalizePhone(str) {
+  if (!str) return "";
+  return String(str).replace(/\D/g, ""); // 숫자만
+}
+function normalizeIg(str) {
+  if (!str) return "";
+  return String(str).trim().toLowerCase().replace(/^@+/, ""); // @ 제거 + 소문자
+}
+
 function normalize(p) {
   const hobbyMap = { "헬스": "운동" };
   const hobbies = (p.hobbies || []).map(h => hobbyMap[h] || h);
@@ -33,17 +44,43 @@ function normalize(p) {
     hobbies,
     region: p.region,
     phone: p.phone ?? "",
-    ig: p.ig ?? ""
+    ig: p.ig ?? "",
+    // ✅ 쿨타임 타임스탬프 기본값
+    lastMatchedAt: (typeof p.lastMatchedAt === "number") ? p.lastMatchedAt : 0
   };
 }
+
+/**
+ * 참가자 추가 (재방문 중복 제거 지원)
+ * - 새로 입력된 phone/ig가 기존 레코드와 하나라도 일치하면 → 기존 레코드 삭제 후 신규만 저장
+ */
 function addParticipant(p) {
   const list = loadAll();
+
+  // 새 입력 값 정규화
+  const newPhone = normalizePhone(p.phone);
+  const newIg = normalizeIg(p.ig);
+
+  // 중복 제거: phone 또는 ig가 일치하는 기존 레코드 제거
+  let filtered = list;
+  if (newPhone || newIg) {
+    filtered = list.filter(x => {
+      const xPhone = normalizePhone(x.phone);
+      const xIg = normalizeIg(x.ig);
+      const phoneConflict = newPhone && xPhone && (xPhone === newPhone);
+      const igConflict = newIg && xIg && (xIg === newIg);
+      return !(phoneConflict || igConflict);
+    });
+  }
+
+  // 정규화 & 저장
   const n = normalize(p);
-  n.id = nextId(list);
-  list.push(n);
-  saveAll(list);
+  n.id = nextId(filtered);
+  filtered.push(n);
+  saveAll(filtered);
   return n;
 }
+
 function filterByGender(g) { return loadAll().filter(p => p.gender === g); }
 
 function exportJson() {
@@ -56,6 +93,69 @@ function exportJson() {
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+}
+
+
+/* ===================== 쿨타임(20분) 로직 ===================== */
+const COOL_TIME_MS = 20 * 60 * 1000; // 20분
+
+// 만료된 matched → waiting 으로 자동 복구
+function cooldownSweep() {
+  const now = Date.now();
+  const list = loadAll();
+  let changed = false;
+
+  for (const p of list) {
+    if (p.status === "matched") {
+      const last = Number(p.lastMatchedAt || 0);
+      // 기록이 없거나 만료된 경우 복구
+      if (!last || isNaN(last) || now - last >= COOL_TIME_MS) {
+        p.status = "waiting";
+        p.lastMatchedAt = 0;
+        changed = true;
+      }
+    }
+  }
+  if (changed) saveAll(list);
+  return changed;
+}
+
+// 선택 확정 시 호출: 전달된 id들을 matched로 표시(쿨타임 시작)
+function markMatched(ids = []) {
+  const now = Date.now();
+  const set = new Set(Array.isArray(ids) ? ids : [ids]);
+  const list = loadAll();
+
+  for (const p of list) {
+    if (set.has(p.id)) {
+      p.status = "matched";
+      p.lastMatchedAt = now;
+    }
+  }
+  saveAll(list);
+}
+
+// (옵션) 특정 id들을 강제로 waiting으로 되돌리고 싶을 때 사용
+function markWaiting(ids = []) {
+  const set = new Set(Array.isArray(ids) ? ids : [ids]);
+  const list = loadAll();
+  let changed = false;
+
+  for (const p of list) {
+    if (set.has(p.id)) {
+      p.status = "waiting";
+      p.lastMatchedAt = 0;
+      changed = true;
+    }
+  }
+  if (changed) saveAll(list);
+}
+
+// (옵션) 남은 쿨타임(ms) 조회
+function getCooldownRemaining(p) {
+  if (p.status !== "matched" || !p.lastMatchedAt) return 0;
+  const remain = COOL_TIME_MS - (Date.now() - p.lastMatchedAt);
+  return Math.max(0, remain);
 }
 
 
@@ -88,7 +188,8 @@ function mbtiScore(a, b) {
 }
 function getHobbiesScore(aHobbies, bHobbies) {
   const setA = new Set(aHobbies || []);
-  const common = (bHobbies || []).filter(h => setA.has(h));
+  theCommon = (bHobbies || []).filter(h => setA.has(h));
+  const common = theCommon; // rename safety
   if (common.length >= 2) return 20;
   if (common.length === 1) return 10;
   return 0;
@@ -120,6 +221,9 @@ function computeTotal(seeker, candidate) {
   return Math.round(mbtiRaw + hobbyRaw + regionRaw + ageRaw + collegeRaw);
 }
 function getTopMatches(seeker, pool, topK = 3) {
+  // ✅ 후보 만들기 전, 만료된 matched 복구
+  cooldownSweep();
+
   return pool
     .filter(p => p.id !== seeker.id && p.status !== "matched")
     .map(c => ({

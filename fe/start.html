@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -35,7 +35,6 @@
         background: linear-gradient(90deg, #d9443f, #b9322f);
         z-index: 1;
       }
-
       .bgVideo {
         position: fixed;
         top: 0;
@@ -43,7 +42,30 @@
         min-width: 100%;
         min-height: 100%;
         object-fit: cover;
-        z-index: -1; /* 뒤로 보내기 */
+        z-index: -1;
+      }
+      /* ▼ 설정(톱니바퀴) 버튼 */
+      .settingsBtn {
+        position: fixed;
+        left: 16px;
+        bottom: 16px;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(17, 24, 39, 0.9); /* #111827 */
+        color: #fff;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        z-index: 2;
+        box-shadow: 0 6px 16px rgba(0,0,0,.25);
+      }
+      .settingsBtn:hover { background: rgba(31, 41, 55, 0.95); } /* #1f2937 */
+      .settingsBtn svg { width: 26px; height: 26px; }
+      .sr-only {
+        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+        overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
       }
     </style>
   </head>
@@ -52,13 +74,26 @@
       <source src="./res/소개팅대작전_메인비디오.mp4" type="video/mp4" />
       브라우저가 동영상을 지원하지 않습니다.
     </video>
-    <img class="startLogo" src="./소개팅대작전_LOGO.png" />
+
+    <img class="startLogo" src="./소개팅대작전_LOGO.png" alt="소개팅 대작전 로고" />
     <button class="startBtn" onclick="goNext()">소개팅 받으러 가기</button>
+
+    <!-- ▼ 좌측 하단 설정 버튼 -->
+    <button class="settingsBtn" onclick="goSettings()" aria-label="설정 열기">
+      <span class="sr-only">설정</span>
+      <!-- gear icon (SVG) -->
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.65l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.17 7.17 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 12.88 2h-3.76a.5.5 0 0 0-.49.41l-.36 2.54c-.58.23-1.12.54-1.63.94l-2.39-.96a.5.5 0 0 0-.61.22L1.72 8.07a.5.5 0 0 0 .12.65l2.03 1.58c-.05.31-.07.63-.07.94s.02.63.07.94L1.84 13.76a.5.5 0 0 0-.12.65l1.92 3.32c.13.22.39.31.61.22l2.39-.96c.51.4 1.05.72 1.63.94l.36 2.54c.05.24.25.41.49.41h3.76c.24 0 .44-.17.49-.41l.36-2.54c.58-.23 1.12-.54 1.63-.94l2.39.96c.22.09.48 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.65l-2.03-1.58ZM11 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"/>
+      </svg>
+    </button>
+
     <script>
       function goNext() {
         window.location.href = "./inforeg/inforeg1/inforeg1.html";
       }
+      function goSettings() {
+    window.location.href = "./setting.html";
+  }
     </script>
   </body>
 </html>
-<br />
