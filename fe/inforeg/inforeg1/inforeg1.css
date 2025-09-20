@@ -1,5 +1,6 @@
 body {
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
+
   margin: 0;
   padding: 0;
   background: #fff;
@@ -13,61 +14,109 @@ body {
 }
 
 h1 {
-  font-size: 1.8rem;
+  font-size: 44px;
+  font-weight: 600;
   margin-bottom: 8px;
 }
 
 .subtitle {
-  color: #666;
+  color: #554646;
+  margin-bottom: 24pxs;
+  font-weight: 500;
+  font-size: 20px;
+}
+
+.genderWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.genderWrapper > label {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  margin: 0 !important;
+  width: auto !important;
+  white-space: nowrap;
+}
+
+.genderWrapper > label > input[type="radio"] {
+  margin: 0;
+}
+
+.nameAge {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+}
+.nameAgeWrapper {
+  flex: 1;
+}
+.nameAgeWrapper.age {
+  flex: 0 0 140px;
+}
+
+.subtitle {
   margin-bottom: 24px;
 }
 
 label {
+  color: #4e5968;
+  font-size: 16px;
+  font-weight: 500;
   display: block;
   margin: 12px 0 6px;
-  font-weight: bold;
 }
-
-input, select {
-   box-sizing: border-box;
+.nameAge {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 10px;
+}
+.nameAgeWrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+input,
+select {
+  box-sizing: border-box;
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  color: #8b95a1;
   margin-bottom: 12px;
 }
 
-
-.option-name{
-  color: #4E5968;
+.option-name {
+  color: #4e5968;
   font-size: 16px;
   font-weight: 500;
 }
 
+input::placeholder {
+  color: #8b95a1;
+  font-size: 13px;
+}
 
 button {
-  width: 100%;
+  width: 100px;
+  height: 50px;
+  margin-top: 2rem;
   padding: 12px;
-  background: #f33;
+  background: linear-gradient(90deg, #ff3f39, #f15774);
   color: #fff;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
 }
+
 button:hover {
-  background: #d22;
+  background: linear-gradient(90deg, #d9443f, #b9322f);
 }
-
-
-h1 {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.subtitle {
-  color: #6b7280;
-  margin-bottom: 24px;
-}
-

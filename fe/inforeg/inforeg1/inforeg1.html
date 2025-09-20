@@ -1,47 +1,70 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>정보 입력 1단계</title>
-  <link rel="stylesheet" href="./inforeg1.css">
-</head>
-<body>
-  <div class="container">
-    <h1>참가자 등록하기</h1>
-    <p class="subtitle">참가자 등록을 위해 정보를 입력해주세요</p>
-  <form id="formStep1">
-    <label>성별</label>
-    <select name="gender" required>
-      <option value="">성별을 선택하세요</option>
-      <option value="남">남</option>
-      <option value="여">여</option>
-    </select>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>정보 입력 1단계</title>
+    <link rel="stylesheet" href="./inforeg1.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>참가자 등록하기</h1>
+      <p class="subtitle">참가자 등록을 위해 정보를 입력해주세요</p>
+      <form id="formStep1">
+        <label>성별</label>
+        <div class="genderWrapper">
+          <label>
+            <input type="radio" name="gender" value="여" required />
+            여자
+          </label>
+          <label>
+            <input type="radio" name="gender" value="남" />
+            남자
+          </label>
+        </div>
+        <div class="nameAge">
+          <div class="nameAgeWrapper">
+            <label>닉네임</label>
+            <input
+              type="text"
+              name="nickName"
+              placeholder="닉네임을 입력해주세요."
+              required
+            />
+          </div>
+          <div class="nameAgeWrapper">
+            <label>나이</label>
+            <input
+              type="number"
+              name="age"
+              min="20"
+              max="29"
+              placeholder="나이를 입력해주세요."
+              required
+            />
+          </div>
+        </div>
+        <label>이름</label>
+        <input
+          type="text"
+          name="name"
+          placeholder="이름은 매칭되지 않은 사람에게 보여지지 않아요!"
+          required
+        />
 
-    <label>닉네임</label>
-    <input type="text" name="nickName" required>
+        <label>학부</label>
+        <!-- 🔥 여기서는 옵션을 넣지 않고 JS에서 infolist.js로 채움 -->
+        <select name="college" required></select>
 
-    <label>나이</label>
-    <input type="number" name="age" min="20" max="29" required>
-
-    <label>이름</label>
-    <input type="text" name="name" required>
-
-    <label>학부</label>
-    <!-- 🔥 여기서는 옵션을 넣지 않고 JS에서 infolist.js로 채움 -->
-    <select name="college" required></select>
-
-    <div class="buttons">
-      <button type="button" id="btnNext">다음</button>
+        <div class="buttons">
+          <button type="button" id="btnNext">다음</button>
+        </div>
+      </form>
     </div>
-  </form>
 
-
-  </div>
-  
-  <!-- 공용 데이터 배열 -->
-  <script src="../../infomain/infolist.js"></script>
-  <!-- 1단계 페이지 JS -->
-  <script src="./inforeg1.js"></script>
-</body>
+    <!-- 공용 데이터 배열 -->
+    <script src="../../infomain/infolist.js"></script>
+    <!-- 1단계 페이지 JS -->
+    <script src="./inforeg1.js"></script>
+  </body>
 </html>
