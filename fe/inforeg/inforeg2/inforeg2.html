@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>정보 입력 (2단계)</title>
+  <link rel="stylesheet" href="./inforeg2.css">
+</head>
+<body>
+  <div class="container">
+    <h1>참가자 등록하기</h1>
+    <p class="subtitle">참가자 등록을 위해 정보를 입력해주세요</p>
+
+    <form id="formStep2">
+      <!-- MBTI -->
+      <label>MBTI</label>
+      <div class="mbti-inputs">
+        <input type="text" name="mbti" maxlength="4" placeholder="MBTI를 입력하세요!" required />
+      </div>
+      
+      <!-- 취미 -->
+      <label>취미 (최대 5개)</label>
+      <div id="hobbyChecks" class="hobby-grid"></div>
+
+      <!-- 지역 수정 씨발 -->
+      <label>지역</label>
+      <select name="region" id="region" required>
+        <option value="">시/도를 선택해주세요.</option>
+      </select>
+      <select name="subregion" id="subregion">
+        <option value="">군/구를 선택해주세요.</option>
+      </select>
+
+      <!-- 전화번호 -->
+      <label>전화번호</label>
+      <input type="text" name="phone" placeholder="010-0000-0000" maxlength="13" />
+
+      <!-- 인스타그램 -->
+      <label>인스타그램</label>
+      <input type="text" name="ig" placeholder="@handle" />
+
+      <div class="buttons">
+        <button type="button" id="btnPrev">이전</button>
+        <button type="button" id="btnNext">다음</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- 공용 데이터 씨발아 -->
+  <script src="../../infomain/infolist.js"></script>
+  <!-- 페이지 로직 -->
+  <script src="./inforeg2.js"></script>
+</body>
+</html>

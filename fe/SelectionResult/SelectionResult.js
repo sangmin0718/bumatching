@@ -1,24 +1,42 @@
-// 나중에 서버나 다른 페이지에서 받아올 변수 (현재는 하드코딩)
-const userData = {
-  school: "백석대학교",   // ← 변수화 가능
-  name: "이정민",         // ← 변수화 가능
-  phone: "010-0000-0000", // ← 변수화 가능
-  instagram: "dlts_min"   // ← 변수화 가능
-};
+// SelectionResult.js
+document.addEventListener("DOMContentLoaded", () => {
+  const LS_KEY = "jjagja_participants_live_v1"; // 전체 참가자 저장 키
+  const userData = JSON.parse(localStorage.getItem("selectedUser"));
 
-// DOM 요소에 값 넣기
-document.querySelector(".school").innerText = userData.school;
-document.getElementById("name").innerText = userData.name;
-document.getElementById("phone").innerText = userData.phone;
-document.getElementById("instagram").innerText = "@" + userData.instagram;
+  if (userData) {
+    document.querySelector(".school").innerText = userData.college || "-";
+    document.getElementById("name").innerText = userData.name || "-";
+    document.getElementById("phone").innerText = userData.phone || "-";
+    document.getElementById("instagram").innerText = userData.ig ? "@" + userData.ig : "-";
+  }
 
-// 종료하기 버튼 클릭 이벤트
-document.querySelector(".end-btn").addEventListener("click", () => {
-  alert("종료되었습니다."); 
-  
-  // 3초 후 첫 화면으로 이동
-  setTimeout(() => {
-    window.location.href = "../start.html";  // 첫 화면 파일 이름/경로에 맞게 수정
-  }, 1000);
+  // 모든 참가자 JSON 다운로드
+  function downloadAllParticipants(filename = "personinfo.json") {
+    const LS_KEY = "jjagja_participants_live_v1";
+    const list = JSON.parse(localStorage.getItem(LS_KEY) || "[]");
+
+    // 들여쓰기 2칸으로 예쁘게 출력
+    const pretty = JSON.stringify(list, null, 2);
+
+    const blob = new Blob([pretty], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // 종료하기 버튼
+  document.querySelector(".end-btn").addEventListener("click", () => {
+    // 1) 전체 참가자 JSON 자동 다운로드
+    downloadAllParticipants("personinfo.json");
+
+    // 2) 안내 후 시작 페이지로 복귀
+    setTimeout(() => {
+      window.location.href = "../start.html";
+    }, 300);
+  });
 });
-
