@@ -62,6 +62,17 @@ body {
 }
 
 /* ===== 상세영역: bio / myComment 2분할 ===== */
+
+/* bio, myComment 위 라벨 */
+.detail-title {
+  font-size: 14px;       /* 다른 detail-half와 비슷하게 */
+  font-weight: 600;      /* 라벨이니까 약간 강조 */
+  color: #4e5968;        /* score-context랑 비슷한 톤 */
+  margin: 12px 0 4px;    /* 위는 살짝 띄우고, 아래는 박스와 딱 붙게 */
+  text-align: left;      /* 카드 안에서도 왼쪽 정렬 */
+}
+
+
 .detail-container {
   /* ⬇️ 카드의 가용 너비(패딩 제외)를 꽉 채워 중앙 정렬 문제 해결 */
   width: 100%;

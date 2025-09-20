@@ -29,10 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
       <p class="score">${user.total}</p>
       <p class="score-context">궁합점수</p>
       <div class="detail-container">
-        <div class="detail-box"><p class="detail">${user.bio || "-"}</p></div>
+        <p class="detail-title">한줄 자기소개</p>
+        <div class="detail-box">
+        <p class="detail">${user.bio || "-"}</p></div>
+        <p class="detail-title">내가 원하는 이상형</p>
         <div class="detail-box"><p class="detail">${user.myComment || "-"}</p></div>
       </div>
-      <div class="card-footer">${user.nickName}</div>
+      <div class="card-footer">닉네임 : ${user.nickName}</div>
     `;
     card.addEventListener("click", () => {
       pendingUser = user;
