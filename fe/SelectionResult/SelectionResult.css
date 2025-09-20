@@ -2,62 +2,86 @@ html, body {
   height: 100%;
 }
 
-
+html {
+  font-size: 16px; /* rem 기준 */
+}
 
 body {
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial;
+  font-family: "Noto Sans KR", sans-serif;
   margin: 0;
   padding: 0;
-  background: #fafafa;
+  background: #ffffff;
+  color: #111;
 }
 
 .container {
-  /* max-width: 500px;
-  margin: 5vh auto; */
-  min-height: 90vh;  /* 본체가 화면의 90% 차지 */
-  margin: 10vh 20vw 10vh 35vw; /* 위는 5vh, 아래는 0 → 남는 공간 방지 */
+  min-height: 90vh;  
+  margin: 10vh 20vw 10vh 35vw; 
   text-align: left;
 }
 
 h1 {
-  margin-bottom: 10px;
-  font-size: 1.8rem;
+  font-size: clamp(2rem, 3vw, 3.5rem); 
+  margin-bottom: clamp(20px, 4.3vh, 46px); /* h1 ↔ subtitle 간격 */
   text-align: left;
+  font-weight: bold;   /* 굵게 */
 }
 
 .subtitle {
+  font-size: clamp(1rem, 1.5vw, 1.5rem);
   color: #555;
-  font-size: 0.95rem;
-  margin-bottom: 40px;
+  margin-bottom: clamp(40px, 9.4vh, 102px); /* subtitle ↔ card 간격 */
   text-align: left;
+  font-weight: bold;   /* 굵게 */
 }
+
 
 .card {
-  border: 1px solid #ef4444;
+  border: 3px solid transparent;   /* 투명 border */
   border-radius: 12px;
-  padding: 5vh 5vw 5vh 2vw;
-  background: #fff;
-  margin-bottom: 5vh;
-  margin-right: 20vw;
-  text-align: left;
-  /* margin-right: 10vw; */
+
+  /* 배경 두 개 겹치기 */
+  background: 
+    linear-gradient(#fff, #fff) padding-box, /* 안쪽 흰색 */
+    linear-gradient(90deg, #FF3F39, #F15F74) border-box; /* 바깥쪽 그라데이션 */
+
+
+  text-align: left;                /* 기존 유지 */
+
+  /* 기존 여백 유지하면서 반응형으로 보강 */
+  padding: clamp(20px, 5vh, 60px) clamp(16px, 5vw, 48px);
+
+  /* 간격 (card ↔ button)도 clamp 적용 */
+  margin-bottom: clamp(30px, 7.4vh, 80px);
+  margin-right: clamp(10vw, 20vw, 25vw);
+
+  /* 카드 크기: 피그마 기준 + 반응형 */
+  width: clamp(280px, 40vw, 477px);
+  min-height: clamp(200px, 35vh, 319px);
+  box-sizing: border-box;
 }
 
+
+
+
 .school {
-  font-size: 0.85rem;
+  font-size: clamp(0.9rem, 1vw, 1rem); /* 14px ~ 16px */
   color: #ef4444;
   display: block;
   margin-bottom: 8px;
+  font-weight: bold;   /* 굵게 */
 }
 
 .card h2 {
-  margin: 0;
-  font-size: 1.6rem;
+  margin-top: 0;
+  margin-bottom: 15%;
+  font-size: clamp(2rem, 4vw, 3.5rem); /* 32px ~ 56px */
 }
 
 .card p {
   margin: 6px 0;
-  font-size: 1rem;
+  font-size: clamp(1rem, 1.5vw, 1.4rem); /* 16px ~ 22px */
+  font-weight: bold;
 }
 
 .sns {
@@ -65,23 +89,29 @@ h1 {
   align-items: center;
   justify-content: left;
   gap: 6px;
+  font-weight: bold;
+  font-size: clamp(1rem, 1.5vw, 1.4rem); /* 16px ~ 22px */
 }
 
 .sns-icon {
-  width: 18px;
-  height: 18px;
+  width: clamp(16px, 2vw, 20px);
+  height: clamp(16px, 2vw, 20px);
 }
 
 .end-btn {
-  background: #ef4444;
+  background: linear-gradient(90deg, #FF3F39, #F15F74); /* ← 그라데이션 */
   color: white;
   border: none;
-  padding: 12px 28px;
+  width: clamp(120px, 12vw, 160px);
+  height: clamp(48px, 6vh, 64px);
+  padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: clamp(1rem, 2vw, 1.25rem);
   cursor: pointer;
+  transition: background 0.3s ease; /* hover 부드럽게 */
 }
 
 .end-btn:hover {
-  background: #dc2626;
+  background: linear-gradient(90deg, #BF302C, #B54655); /* ← 그라데이션 */
+  ;
 }
