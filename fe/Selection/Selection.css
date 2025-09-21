@@ -48,10 +48,11 @@ body {
   border-radius: 16px;
   justify-content: flex-start;
   align-items: center;
-  transition: opacity 0.3s ease, transform 0.3s ease,
-    border 0.2s ease-out, border-image 0.2s ease-out;
+  transition: opacity 0.3s ease, transform 0.3s ease, border 0.2s ease-out,
+    border-image 0.2s ease-out;
   cursor: pointer;
   position: relative;
+  overflow: hidden;
 }
 
 .cardBox:hover {
@@ -65,27 +66,26 @@ body {
 
 /* bio, myComment 위 라벨 */
 .detail-title {
-  font-size: 14px;       /* 다른 detail-half와 비슷하게 */
-  font-weight: 600;      /* 라벨이니까 약간 강조 */
-  color: #4e5968;        /* score-context랑 비슷한 톤 */
-  margin: 12px 0 4px;    /* 위는 살짝 띄우고, 아래는 박스와 딱 붙게 */
-  text-align: left;      /* 카드 안에서도 왼쪽 정렬 */
+  font-size: 14px; /* 다른 detail-half와 비슷하게 */
+  font-weight: 600; /* 라벨이니까 약간 강조 */
+  color: #4e5968; /* score-context랑 비슷한 톤 */
+  margin: 12px 0 4px; /* 위는 살짝 띄우고, 아래는 박스와 딱 붙게 */
+  text-align: left; /* 카드 안에서도 왼쪽 정렬 */
 }
-
 
 .detail-container {
   /* ⬇️ 카드의 가용 너비(패딩 제외)를 꽉 채워 중앙 정렬 문제 해결 */
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  align-self: stretch;   /* 부모가 align-items:center여도 가로로 쭉 펼침 */
+  align-self: stretch; /* 부모가 align-items:center여도 가로로 쭉 펼침 */
   margin: 0;
 
   height: 220px;
   display: flex;
   flex-direction: column;
-  gap: 6px;              /* ✅ 두 칸 사이 6px 간격 */
-  padding: 0;            /* 내부 박스가 자체 패딩을 가짐 */
+  gap: 6px; /* ✅ 두 칸 사이 6px 간격 */
+  padding: 0; /* 내부 박스가 자체 패딩을 가짐 */
   background: transparent;
   border-radius: 0;
 }
@@ -112,7 +112,7 @@ body {
   font-size: 14px;
   line-height: 1.5;
   color: #4e5968;
-  display: -webkit-box;        /* 멀티라인 말줄임 */
+  display: -webkit-box; /* 멀티라인 말줄임 */
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -121,12 +121,12 @@ body {
 .detail-half.top {
   background: #f9fafb;
   border-bottom: 1px dashed #e5e8eb;
-  font-weight: 500;            /* bio 살짝 강조 */
+  font-weight: 500; /* bio 살짝 강조 */
 }
 
 .detail-half.bottom {
   background: #ffffff;
-  color: #6b7280;              /* myComment는 좀 더 옅게 */
+  color: #6b7280; /* myComment는 좀 더 옅게 */
 }
 
 /* (호환 유지) 단일 detail 문단 — 현재는 사용 안 하지만 남겨둠 */
@@ -157,7 +157,7 @@ body {
   background: linear-gradient(90deg, #ff3f39, #f15f74);
   color: #fff;
   font-weight: 600;
-  height: 26px;
+
   text-align: center;
   padding: 16px 0;
   font-size: 22px;
@@ -166,8 +166,8 @@ body {
   position: absolute;
   left: 0;
   bottom: 0;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
+
+  background-clip: padding-box;
 }
 
 /* ===== 모달 오버레이 ===== */
@@ -187,51 +187,64 @@ body {
 /* ===== 팝업 ===== */
 .modal {
   background: #fff;
-  padding: 20px;
+  padding: 8px 16px;
   border-radius: 16px;
   width: 598px;
   height: 170px;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
   display: flex;
   flex-direction: column;
+  gap: 30px;
 }
 
 .modal-content {
   align-self: flex-start;
   display: flex;
   flex-direction: column;
+  align-items: self-start;
+  gap: 10px;
 }
 
 .modal-content h3 {
   color: #ff3f39;
   font-size: 24px;
   font-weight: 600;
+  margin: 0;
 }
 
 .modal p {
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 600;
   color: #8b8b8b;
   text-align: left;
+  margin: 0;
 }
 
 .actions {
   display: flex;
-  justify-content: flex-end;
+  font-size: 22px;
+  font-weight: 600;
   gap: 10px;
+  align-self: flex-end;
 }
-
 .btn {
-  padding: 8px 16px;
-  border-radius: 6px;
+  background: none;
   border: none;
+  outline: none;
   cursor: pointer;
   font-weight: 600;
+  font-size: 22px;
+  padding: 0;
 }
+
 .btn.cancel {
-  background: #eee;
+  color: #8b8b8b;
+  font-size: 22px;
+  font-weight: 600;
 }
 .btn.confirm {
-  background: #ff3f39;
-  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  color: #ff3f39;
 }
