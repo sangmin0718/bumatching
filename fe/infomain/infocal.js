@@ -97,7 +97,7 @@ function exportJson() {
 
 
 /* ===================== 쿨타임(20분) 로직 ===================== */
-const COOL_TIME_MS = 20 * 60 * 1000; // 20분
+const COOL_TIME_MS = 20 * 60 * 1000; // 15분
 
 // 만료된 matched → waiting 으로 자동 복구
 function cooldownSweep() {

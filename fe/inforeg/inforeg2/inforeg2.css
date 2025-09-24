@@ -1,5 +1,5 @@
 body {
-  font-family: 'Pretendard', sans-serif;
+  font-family: "Pretendard", sans-serif;
   margin: 0;
   padding: 0;
   background: #fff;
@@ -77,11 +77,16 @@ select {
 }
 
 button {
+  width: auto;
+  height: 50px;
+  margin-top: 2rem;
   padding: 10px 20px;
+  background: linear-gradient(90deg, #ff3f39, #f15774);
+  color: #fff;
   border: none;
   border-radius: 8px;
-  background: #ef4444;
-  color: #fff;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
 }
+
