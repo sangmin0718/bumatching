@@ -82,6 +82,7 @@ body {
   margin: 0;
 
   height: 220px;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   gap: 6px;              /* ✅ 두 칸 사이 6px 간격 */
