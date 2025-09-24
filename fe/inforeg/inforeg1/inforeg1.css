@@ -104,19 +104,18 @@ input::placeholder {
 }
 
 button {
-  width: 100px;
+  width: auto;
   height: 50px;
   margin-top: 2rem;
-  padding: 12px;
+  padding: 10px 20px;
   background: linear-gradient(90deg, #ff3f39, #f15774);
   color: #fff;
   border: none;
   border-radius: 8px;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
   cursor: pointer;
 }
-
 button:hover {
   background: linear-gradient(90deg, #d9443f, #b9322f);
 }
