@@ -205,6 +205,8 @@ body {
 .modal-content h3 {
   color: #ff3f39;
   font-size: 24px;
+  display: flex;
+  justify-content: flex-start;
   font-weight: 600;
 }
 
@@ -219,6 +221,7 @@ body {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+    padding-top: 1rem;
 }
 
 .btn {
@@ -227,6 +230,7 @@ body {
   border: none;
   cursor: pointer;
   font-weight: 600;
+
 }
 .btn.cancel {
   background: #eee;
